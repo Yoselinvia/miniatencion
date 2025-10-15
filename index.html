@@ -1,29 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Atención</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Atención</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="mini-atencion">
-    <h2 id="objetivo">Toca el círculo rojo</h2>
-    <div class="puntaje" id="puntaje">Puntaje: 0 ⭐</div>
-    <div class="nivel" id="nivel">Nivel: 1</div>
-    <div class="barra-tiempo">
-      <div id="barra-progreso" class="barra-progreso"></div>
-    </div>
-
-    <div class="juego" id="juego">
-      <!-- Los círculos se generarán con JS -->
-    </div>
+  <h1 id="objetivo">Toca el círculo rojo</h1>
+  <div id="puntaje">Puntaje: 0 ⭐</div>
+  <div id="nivel">Nivel: 1</div>
+  <div class="barra-tiempo">
+    <div id="barra-progreso"></div>
   </div>
+  <div id="juego"></div>
 
   <audio id="acierto" src="acierto.mp3"></audio>
   <audio id="error" src="error.mp3"></audio>
   <audio id="victoria" src="victoria.mp3"></audio>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
