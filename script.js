@@ -1,80 +1,97 @@
-import React, { useState, useEffect, useRef } from 'react';
-import aciertoSound from './acierto.mp3';
-import errorSound from './error.mp3';
-import './MiniAtencion.css';
+const coloresIniciales = ['red','green','blue','yellow'];
+let colores = [...coloresIniciales];
+let colorObjetivo = 'red';
+let puntaje = 0;
+let nivel = 1;
+let tiempoCambio = 2000;
+let tiempoRestante = tiempoCambio;
+let juegoActivo = true;
 
-const colores = ['red','green','blue','yellow'];
+const objetivo = document.getElementById('objetivo');
+const puntajeEl = document.getElementById('puntaje');
+const nivelEl = document.getElementById('nivel');
+const juego = document.getElementById('juego');
+const barra = document.getElementById('barra-progreso');
 
-export default function MiniAtencion() {
-  const [colorObjetivo, setColorObjetivo] = useState('red');
-  const [puntaje, setPuntaje] = useState(0);
-  const [nivel, setNivel] = useState(1);
-  const [tiempoCambio, setTiempoCambio] = useState(1000);
+const aciertoSound = document.getElementById('acierto');
+const errorSound = document.getElementById('error');
+const victoriaSound = document.getElementById('victoria');
 
-  const aciertoRef = useRef(null);
-  const errorRef = useRef(null);
-
-  // Cambiar color objetivo cada vez que se toca el correcto
-  const cambiarObjetivo = () => {
-    const random = colores[Math.floor(Math.random() * colores.length)];
-    setColorObjetivo(random);
-  };
-
-  const tocarCirculo = (color) => {
-    if(color === colorObjetivo){
-      setPuntaje(p => p + 1);
-      reproducirAudio(aciertoRef);
-    } else {
-      reproducirAudio(errorRef);
-    }
-
-    // Subir nivel cada 5 puntos
-    if((puntaje+1) % 5 === 0){
-      subirNivel();
-    }
-
-    cambiarObjetivo();
-  };
-
-  const reproducirAudio = (audioRef) => {
-    const audio = audioRef.current;
-    if(audio){
-      audio.currentTime = 0;
-      audio.play().catch(()=>{});
-    }
-  };
-
-  const subirNivel = () => {
-    setNivel(n => n + 1);
-    setTiempoCambio(t => (t > 400 ? t - 100 : t));
-  };
-
-  const colorNombre = (c) => {
-    if(c==='red') return 'rojo';
-    if(c==='green') return 'verde';
-    if(c==='blue') return 'azul';
-    if(c==='yellow') return 'amarillo';
-  };
-
-  return (
-    <div className="mini-atencion">
-      <h2>Toca el círculo {colorNombre(colorObjetivo)}</h2>
-      <div className="puntaje">Puntaje: {puntaje} {'⭐'.repeat(Math.floor(puntaje/5))}</div>
-      <div className="nivel">Nivel: {nivel}</div>
-
-      <div className="juego">
-        {colores.map(color => (
-          <div 
-            key={color} 
-            className="circulo" 
-            style={{backgroundColor: color}}
-            onClick={() => tocarCirculo(color)}
-          ></div>
-        ))}
-      </div>
-
-      <audio ref={aciertoRef} src={aciertoSound}></audio>
-      <audio ref={errorRef} src={errorSound}></audio>
-    </div>
-  );
+// Generar círculos visibles
+function generarCirculos() {
+  juego.innerHTML = '';
+  colores.forEach(color => {
+    const div = document.createElement('div');
+    div.className = 'circulo';
+    div.style.backgroundColor = color;
+    div.addEventListener('click', () => tocarCirculo(color));
+    juego.appendChild(div);
+  });
 }
+
+// Cambiar objetivo
+function cambiarObjetivo() {
+  const random = colores[Math.floor(Math.random() * colores.length)];
+  colorObjetivo = random;
+  objetivo.textContent = `Toca el círculo ${colorObjetivo}`;
+  tiempoRestante = tiempoCambio;
+}
+
+// Reproducir sonido
+function reproducirAudio(audio) {
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
+}
+
+// Subir nivel
+function subirNivel() {
+  nivel++;
+  nivelEl.textContent = `Nivel: ${nivel}`;
+  if(colores.length < 8){
+    const nuevosColores = ['orange','purple','pink','cyan'].slice(0, nivel-1);
+    colores = [...coloresIniciales, ...nuevosColores];
+  }
+  tiempoCambio = tiempoCambio > 500 ? tiempoCambio - 200 : tiempoCambio;
+  generarCirculos();
+}
+
+// Manejar clic en círculo
+function tocarCirculo(color) {
+  if(!juegoActivo) return;
+  if(color === colorObjetivo){
+    puntaje++;
+    puntajeEl.textContent = `Puntaje: ${puntaje} ${'⭐'.repeat(Math.floor(puntaje/5))}`;
+    reproducirAudio(aciertoSound);
+  } else {
+    reproducirAudio(errorSound);
+  }
+
+  if(puntaje % 5 === 0 && puntaje > 0){
+    subirNivel();
+  }
+
+  cambiarObjetivo();
+}
+
+// Barra de tiempo
+function actualizarBarra() {
+  if(!juegoActivo) return;
+  tiempoRestante -= 100;
+  barra.style.width = `${(tiempoRestante/tiempoCambio)*100}%`;
+  if(tiempoRestante <= 0){
+    juegoActivo = false;
+    reproducirAudio(victoriaSound);
+    setTimeout(()=> {
+      alert(`¡Juego terminado!\nPuntaje final: ${puntaje}`);
+    }, 100);
+  }
+}
+
+// Iniciar juego
+function iniciarJuego() {
+  generarCirculos();
+  cambiarObjetivo();
+  setInterval(actualizarBarra, 100);
+}
+
+iniciarJuego();
