@@ -1,4 +1,5 @@
-const colores = ['red','green','blue','yellow'];
+const coloresIniciales = ['red','green','blue','yellow'];
+let colores = [...coloresIniciales];
 let colorObjetivo = 'red';
 let puntaje = 0;
 let nivel = 1;
@@ -12,7 +13,7 @@ const acierto = document.getElementById('acierto');
 const error = document.getElementById('error');
 const victoria = document.getElementById('victoria');
 
-// Crear los círculos
+// Generar círculos
 function generarCirculos() {
   juegoEl.innerHTML = '';
   colores.forEach(color => {
@@ -31,23 +32,36 @@ function cambiarObjetivo() {
   objetivoEl.textContent = `Toca el círculo ${colorObjetivo}`;
 }
 
-// Función al tocar círculo
+// Reproducir sonido
+function reproducirAudio(audio) {
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
+}
+
+// Subir nivel
+function subirNivel() {
+  nivel++;
+  nivelEl.textContent = `Nivel: ${nivel}`;
+  if(colores.length < 8){
+    const nuevosColores = ['orange','purple','pink','cyan'].slice(0, nivel-1);
+    colores = [...coloresIniciales, ...nuevosColores];
+  }
+  generarCirculos();
+}
+
+// Manejar clic
 function tocarCirculo(color) {
   if(color === colorObjetivo){
     puntaje++;
     puntajeEl.textContent = `Puntaje: ${puntaje} ${'⭐'.repeat(Math.floor(puntaje/5))}`;
-    acierto.currentTime = 0;
-    acierto.play().catch(()=>{});
+    reproducirAudio(acierto);
   } else {
-    error.currentTime = 0;
-    error.play().catch(()=>{});
+    reproducirAudio(error);
   }
 
-  if(puntaje > 0 && puntaje % 5 === 0){
-    nivel++;
-    nivelEl.textContent = `Nivel: ${nivel}`;
+  if(puntaje % 5 === 0 && puntaje > 0){
+    subirNivel();
   }
-
   cambiarObjetivo();
 }
 
