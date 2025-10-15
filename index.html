@@ -1,69 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniAtención</title>
-<style>
-  body { font-family: Arial; text-align: center; background: #f0f8ff; margin:0; padding:0; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;}
-  h1 { margin-top:20px; }
-  #mensaje { font-size: 24px; margin: 20px; }
-  .circulo { width: 80px; height: 80px; border-radius: 50%; display: inline-block; margin: 15px; cursor: pointer; transition: transform 0.2s; }
-  .circulo:active { transform: scale(1.2); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Atención</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="mini-atencion">
+    <h2 id="objetivo">Toca el círculo rojo</h2>
+    <div class="puntaje" id="puntaje">Puntaje: 0 ⭐</div>
+    <div class="nivel" id="nivel">Nivel: 1</div>
+    <div class="barra-tiempo">
+      <div id="barra-progreso" class="barra-progreso"></div>
+    </div>
 
-<h1>MiniAtención</h1>
-<p id="mensaje">Toca el círculo rojo</p>
-<div id="juego"></div>
+    <div class="juego" id="juego">
+      <!-- Los círculos se generarán con JS -->
+    </div>
+  </div>
 
-<script>
-const colores = ['red','green','blue','yellow'];
-let colorObjetivo = 'red';
-const mensaje = document.getElementById('mensaje');
-const juego = document.getElementById('juego');
+  <audio id="acierto" src="acierto.mp3"></audio>
+  <audio id="error" src="error.mp3"></audio>
+  <audio id="victoria" src="victoria.mp3"></audio>
 
-// Función para crear círculos
-function crearCirculos() {
-  juego.innerHTML = '';
-  colores.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'circulo';
-    div.style.backgroundColor = c;
-    div.onclick = () => tocarCirculo(c);
-    juego.appendChild(div);
-  });
-}
-
-// Nombre del color en español
-function colorNombre(c) {
-  if(c==='red') return 'rojo';
-  if(c==='green') return 'verde';
-  if(c==='blue') return 'azul';
-  if(c==='yellow') return 'amarillo';
-}
-
-// Cambiar color objetivo
-function cambiarObjetivo() {
-  colorObjetivo = colores[Math.floor(Math.random()*colores.length)];
-  mensaje.textContent = `Toca el círculo ${colorNombre(colorObjetivo)}`;
-}
-
-// Lógica al tocar un círculo
-function tocarCirculo(c) {
-  if(c === colorObjetivo) {
-    mensaje.textContent = "¡Bien hecho!";
-  } else {
-    mensaje.textContent = "Intenta de nuevo...";
-  }
-  setTimeout(cambiarObjetivo, 1000);
-}
-
-// Inicializar juego
-crearCirculos();
-cambiarObjetivo();
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
