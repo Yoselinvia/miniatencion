@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniAtención</title>
+<style>
+  body { font-family: Arial; text-align: center; background: #f0f8ff; margin:0; padding:0; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;}
+  h1 { margin-top:20px; }
+  #mensaje { font-size: 24px; margin: 20px; }
+  .circulo { width: 80px; height: 80px; border-radius: 50%; display: inline-block; margin: 15px; cursor: pointer; transition: transform 0.2s; }
+  .circulo:active { transform: scale(1.2); }
+</style>
+</head>
+<body>
+
+<h1>MiniAtención</h1>
+<p id="mensaje">Toca el círculo rojo</p>
+<div id="juego"></div>
+
+<script>
+const colores = ['red','green','blue','yellow'];
+let colorObjetivo = 'red';
+const mensaje = document.getElementById('mensaje');
+const juego = document.getElementById('juego');
+
+// Función para crear círculos
+function crearCirculos() {
+  juego.innerHTML = '';
+  colores.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'circulo';
+    div.style.backgroundColor = c;
+    div.onclick = () => tocarCirculo(c);
+    juego.appendChild(div);
+  });
+}
+
+// Nombre del color en español
+function colorNombre(c) {
+  if(c==='red') return 'rojo';
+  if(c==='green') return 'verde';
+  if(c==='blue') return 'azul';
+  if(c==='yellow') return 'amarillo';
+}
+
+// Cambiar color objetivo
+function cambiarObjetivo() {
+  colorObjetivo = colores[Math.floor(Math.random()*colores.length)];
+  mensaje.textContent = `Toca el círculo ${colorNombre(colorObjetivo)}`;
+}
+
+// Lógica al tocar un círculo
+function tocarCirculo(c) {
+  if(c === colorObjetivo) {
+    mensaje.textContent = "¡Bien hecho!";
+  } else {
+    mensaje.textContent = "Intenta de nuevo...";
+  }
+  setTimeout(cambiarObjetivo, 1000);
+}
+
+// Inicializar juego
+crearCirculos();
+cambiarObjetivo();
+</script>
+
+</body>
+</html>
